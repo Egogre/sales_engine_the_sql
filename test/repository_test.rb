@@ -40,4 +40,15 @@ class RepositoryTest < Minitest::Test
 
     assert_equal engine, repo.sales_engine
   end
+
+  def test_can_select_by_attribute
+    engine = SalesEngine.new
+    engine.startup
+    repo = engine.invoice_repository
+    collection = repo.find_all_by(:customer_id, 1)
+
+    assert_kind_of Array, collection
+    assert_kind_of Invoice, collection[0]
+    assert_equal 8, collection.length
+  end
 end
