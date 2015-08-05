@@ -31,6 +31,12 @@ class Repository
     end
   end
 
+  def find_top(number, attribute)
+    records.max_by(number) do |element|
+      element.send(attribute).to_i
+    end
+  end
+
   def successful_transactions
     sales_engine.transaction_repository.find_all_by(:result, "success")
   end

@@ -51,4 +51,16 @@ class RepositoryTest < Minitest::Test
     assert_kind_of Invoice, collection[0]
     assert_equal 8, collection.length
   end
+
+  def test_can_select_top_from_collection
+    engine = SalesEngine.new
+    engine.startup
+    repo = engine.invoice_repository
+    collection = repo.find_top(3, :customer_id)
+    
+    assert_equal 3, collection.length
+    assert_equal "196", collection[0].customer_id
+    assert_equal "196", collection[1].customer_id
+    assert_equal "195", collection[2].customer_id
+  end
 end
