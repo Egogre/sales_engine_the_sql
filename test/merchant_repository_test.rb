@@ -1,44 +1,41 @@
 require_relative 'test_helper'
 
 class MerchantRepositoryTest < Minitest::Test
-attr_reader :customer_repo
+attr_reader :merchant_repo
 
   def setup
     csv_table = [{
                   :id => 1,
-                  :first_name => "George",
-                  :last_name => "Hudson"
+                  :name => "Fun Guys"
                  },
                  {
                   :id => 2,
-                  :first_name => "Naiya",
-                  :last_name => "Washburn"
+                  :name => "Interesting Folk"
                  },
                  {
                   :id => 3,
-                  :first_name => "Alida",
-                  :last_name => "Washburn"
+                  :name => "Dirty Villagers"
                  }]
     engine = "Pretend Engine"
-    @customer_repo = CustomerRepository.new(csv_table, engine)
+    @merchant_repo = MerchantRepository.new(csv_table, engine)
   end
 
   def test_it_exists
-    assert customer_repo
+    assert merchant_repo
   end
 
   def test_it_converts_to_hash
-    assert_kind_of Hash, customer_repo.records
+    assert_kind_of Hash, merchant_repo.records
   end
 
-  def test_all_returns_all_customers
-    assert_equal 3, customer_repo.all.length
+  def test_all_returns_all_merchants
+    assert_equal 3, merchant_repo.all.length
   end
 
   def test_random
     instances = []
     100.times do
-      instances << customer_repo.random
+      instances << merchant_repo.random
     end
 
     refute_equal 1, instances.uniq.length

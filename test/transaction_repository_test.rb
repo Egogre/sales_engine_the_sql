@@ -1,44 +1,50 @@
 require_relative 'test_helper'
 
 class TransactionRepositoryTest < Minitest::Test
-attr_reader :customer_repo
+attr_reader :transaction_repo
 
   def setup
     csv_table = [{
                   :id => 1,
-                  :first_name => "George",
-                  :last_name => "Hudson"
+                  :invoice_id => 4,
+                  :credit_card_number => 1234123412341234,
+                  :credit_card_expiration_date => "09-12-15",
+                  :result => "success"
                  },
                  {
                   :id => 2,
-                  :first_name => "Naiya",
-                  :last_name => "Washburn"
+                  :invoice_id => 4,
+                  :credit_card_number => 1111222233334444,
+                  :credit_card_expiration_date => "04-12-12",
+                  :result => "success"
                  },
                  {
                   :id => 3,
-                  :first_name => "Alida",
-                  :last_name => "Washburn"
+                  :invoice_id => 4,
+                  :credit_card_number => 4321432143214321,
+                  :credit_card_expiration_date => "09-08-17",
+                  :result => "failed"
                  }]
     engine = "Pretend Engine"
-    @customer_repo = CustomerRepository.new(csv_table, engine)
+    @transaction_repo = TransactionRepository.new(csv_table, engine)
   end
 
   def test_it_exists
-    assert customer_repo
+    assert transaction_repo
   end
 
   def test_it_converts_to_hash
-    assert_kind_of Hash, customer_repo.records
+    assert_kind_of Hash, transaction_repo.records
   end
 
-  def test_all_returns_all_customers
-    assert_equal 3, customer_repo.all.length
+  def test_all_returns_all_transactions
+    assert_equal 3, transaction_repo.all.length
   end
 
   def test_random
     instances = []
     100.times do
-      instances << customer_repo.random
+      instances << transaction_repo.random
     end
 
     refute_equal 1, instances.uniq.length
