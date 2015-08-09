@@ -2,11 +2,17 @@ require 'csv'
 
 class SalesEngine
   attr_reader :customers,
+              :customer_repository,
               :invoice_items,
+              :invoice_item_repository,
               :invoices,
+              :invoice_repository,
               :items,
+              :item_repository,
               :merchants,
-              :transactions
+              :merchant_repository,
+              :transactions,
+              :transaction_repository
 
   def initialize(csv_folder = nil)
     csv_folder = csv_folder || File.expand_path('../../data',  __FILE__)
@@ -37,12 +43,12 @@ class SalesEngine
   end
 
   def startup
-    @customer_repository     = CustomerRepository.new (customers, self)
-    @invoice_item_repository = InvoiceItemRepository.new (invoice_items, self)
-    @invoice_repository      = InvoiceRepository.new (invoices, self)
-    @item_repository         = ItemRepository.new (items, self)
-    @merchant_repository     = MerchantRepository.new (merchants, self)
-    @transaction_repository  = TransactionrRepository.new (transactions, self)
+    @customer_repository     = CustomerRepository.new(customers, self)
+    @invoice_item_repository = InvoiceItemRepository.new(invoice_items, self)
+    @invoice_repository      = InvoiceRepository.new(invoices, self)
+    @item_repository         = ItemRepository.new(items, self)
+    @merchant_repository     = MerchantRepository.new(merchants, self)
+    @transaction_repository  = TransactionRepository.new(transactions, self)
   end
 
 end

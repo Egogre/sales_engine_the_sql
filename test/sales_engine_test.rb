@@ -13,23 +13,23 @@ class SalesEngineTest < Minitest::Test
     folder = File.join(sales_engine_root, 'data')
     engine = SalesEngine.new(folder)
 
-    assert engine.customers_file
-    assert engine.invoice_items_file
-    assert engine.invoices_file
-    assert engine.items_file
-    assert engine.merchants_file
-    assert engine.transactions_file
+    assert engine.customers
+    assert engine.invoice_items
+    assert engine.invoices
+    assert engine.items
+    assert engine.merchants
+    assert engine.transactions
   end
 
   def test_files_are_converted_to_table
     engine = SalesEngine.new
 
-    assert_kind_of CSV::Table, engine.customers_file
-    assert_kind_of CSV::Table, engine.invoice_items_file
-    assert_kind_of CSV::Table, engine.invoices_file
-    assert_kind_of CSV::Table, engine.items_file
-    assert_kind_of CSV::Table, engine.merchants_file
-    assert_kind_of CSV::Table, engine.transactions_file
+    assert_kind_of CSV::Table, engine.customers
+    assert_kind_of CSV::Table, engine.invoice_items
+    assert_kind_of CSV::Table, engine.invoices
+    assert_kind_of CSV::Table, engine.items
+    assert_kind_of CSV::Table, engine.merchants
+    assert_kind_of CSV::Table, engine.transactions
   end
 
   def test_it_loads_repositories
