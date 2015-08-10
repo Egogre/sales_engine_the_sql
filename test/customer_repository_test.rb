@@ -28,14 +28,17 @@ attr_reader :customer_repo
   end
 
   def test_it_converts_to_hash
+    skip
     assert_kind_of Hash, customer_repo.records
   end
 
   def test_all_returns_all_customers
+    skip
     assert_equal 3, customer_repo.all.length
   end
 
   def test_random
+    skip
     instances = []
     100.times do
       instances << customer_repo.random
@@ -45,18 +48,21 @@ attr_reader :customer_repo
   end
 
   def test_find_by_id
+    skip
     customer = customer_repo.find_by_id(2)
 
     assert_equal "Naiya", customer[:first_name]
   end
 
   def test_find_all_by_first_name
+    skip
     customer_repo.load_customer_searches
 
     assert_equal 1, customer_repo.find_all_by_first_name("Alida").count
   end
 
   def test_find_all_by_last_name
+    skip
     customer_repo.load_customer_searches
 
     assert_equal 2, customer_repo.find_all_by_last_name("Washburn").count

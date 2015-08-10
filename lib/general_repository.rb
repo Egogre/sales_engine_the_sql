@@ -1,13 +1,10 @@
 require 'sqlite3'
 
 module GeneralRepository
-  attr_reader :records, :engine, :csv_table
+  attr_reader :db, :engine, :csv_table
 
   def initialize(csv_table, engine)
     @csv_table = csv_table
-    @db = csv_table.each_with_object({}) do |record, hash|
-      hash[record[:id]] = record
-    end
     @engine = engine
   end
 

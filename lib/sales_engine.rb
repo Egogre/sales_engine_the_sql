@@ -14,9 +14,11 @@ class SalesEngine
               :merchant_repository,
               :transactions,
               :transaction_repository,
-              :db
+              :db,
+              :customer_table
 
   def initialize(csv_folder = nil)
+    `rm -rf "sales_engine.db"`
     csv_folder = csv_folder || File.expand_path('../../data',  __FILE__)
     @customers          = CSV.read("#{csv_folder}/customers.csv",
                                   :headers => true,
@@ -43,6 +45,8 @@ class SalesEngine
                                   :header_converters => :symbol,
                                   :converters => :numeric)
     @db = SQLite3::Database.new("sales_engine.db")
+    db.results_as_hash = true
+    load_database_tables
   end
 
   def startup
@@ -53,5 +57,39 @@ class SalesEngine
     @merchant_repository     = MerchantRepository.new(merchants, self)
     @transaction_repository  = TransactionRepository.new(transactions, self)
   end
+
+  def load_database_tables
+    load_customer_table
+  end
+
+  def load_customer_table
+    db.execute <<-SQL
+    CREATE TABLE customers (id INTEGER PRIMARY KEY AUTOINCREMENT,
+                                        first_name VARCHAR(20),
+                                        last_name VARCHAR(20),
+                                        created_at DATETIME,
+                                        updated_at DATETIME);
+    SQL
+
+    customers.each do |customer|
+      columns = 'first_name, last_name, created_at, updated_at'
+      vals = [customer[:first_name], customer[:last_name], customer[:created_at], customer[:updated_at]]
+      db.execute "INSERT INTO customers (#{columns}) VALUES (?,?,?,?);", vals
+    end
+  end
+  #INSERT INTO games(yr,city) VALUES (2005,'Athens');
+
+  # def add(record_attributes)
+  #     keys = (record_attributes[0] || {}).keys
+  #     name_sql = keys.join(', ')
+  #
+  #     values_sql = record_attributes.map { |attrs|
+  #       sql = keys.map { |key| attrs[key].inspect }.join(", ")
+  #       "(#{sql})"
+  #     }.join(", ")
+  #
+  #     insert_sql = "insert into #{table_name} (#{name_sql}) values #{values_sql};"
+  #     db.execute(insert_sql)
+  #   end
 
 end
