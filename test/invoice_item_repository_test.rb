@@ -50,4 +50,36 @@ attr_reader :invoice_item_repo
     refute_equal 1, instances.uniq.length
   end
 
+  def test_find_by_id
+    invoice_item = invoice_item_repo.find_by_id(2)
+
+    assert_equal 4, invoice_item[:item_id]
+  end
+
+  def test_find_all_by_item_id
+    invoice_item_repo.load_invoice_item_searches
+
+    assert_equal 1, invoice_item_repo.find_all_by_item_id(3).count
+  end
+
+  def test_find_all_by_invoice_id
+    invoice_item_repo.load_invoice_item_searches
+
+    assert_equal 2, invoice_item_repo.find_all_by_invoice_id(5).count
+  end
+
+  def test_find_all_by_quantity
+    invoice_item_repo.load_invoice_item_searches
+    invoice_item_array = invoice_item_repo.find_all_by_quantity(20)
+
+    assert_equal 2, invoice_item_array[0][:id]
+  end
+
+  def test_find_all_by_unit_price
+    invoice_item_repo.load_invoice_item_searches
+    invoice_item_array = invoice_item_repo.find_all_by_unit_price(4999)
+
+    assert_equal 3, invoice_item_array[0][:id]
+  end
+
 end

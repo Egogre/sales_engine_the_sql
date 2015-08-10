@@ -52,8 +52,14 @@ attr_reader :customer_repo
 
   def test_find_all_by_first_name
     customer_repo.load_customer_searches
-    
+
     assert_equal 1, customer_repo.find_all_by_first_name("Alida").count
+  end
+
+  def test_find_all_by_last_name
+    customer_repo.load_customer_searches
+
+    assert_equal 2, customer_repo.find_all_by_last_name("Washburn").count
   end
 
 end
