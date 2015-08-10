@@ -1,4 +1,5 @@
 require 'csv'
+require 'sqlite3'
 
 class SalesEngine
   attr_reader :customers,
@@ -12,7 +13,8 @@ class SalesEngine
               :merchants,
               :merchant_repository,
               :transactions,
-              :transaction_repository
+              :transaction_repository,
+              :db
 
   def initialize(csv_folder = nil)
     csv_folder = csv_folder || File.expand_path('../../data',  __FILE__)
@@ -40,6 +42,7 @@ class SalesEngine
                                   :headers => true,
                                   :header_converters => :symbol,
                                   :converters => :numeric)
+    @db = SQLite3::Database.new("sales_engine.db")
   end
 
   def startup

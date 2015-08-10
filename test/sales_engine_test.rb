@@ -44,4 +44,11 @@ class SalesEngineTest < Minitest::Test
     assert engine.transaction_repository
   end
 
+  def test_it_creates_database
+    engine = SalesEngine.new
+    engine.startup
+
+    assert_equal SQLite3::Database, engine.db.class
+  end
+
 end
