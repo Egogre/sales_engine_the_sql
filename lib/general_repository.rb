@@ -1,8 +1,9 @@
 module GeneralRepository
-  attr_reader :records, :engine
+  attr_reader :records, :engine, :csv_table
 
   def initialize(csv_table, engine)
-    @records = csv_table.each_with_object(Hash.new) do |record, hash|
+    @csv_table = csv_table
+    @records = csv_table.each_with_object({}) do |record, hash|
       hash[record[:id]] = record
     end
     @engine = engine
@@ -14,6 +15,10 @@ module GeneralRepository
 
   def random
     records.values.sample
+  end
+
+  def find_by_id(value)
+    records[value]
   end
 
 end

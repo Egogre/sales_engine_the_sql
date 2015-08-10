@@ -44,4 +44,16 @@ attr_reader :customer_repo
     refute_equal 1, instances.uniq.length
   end
 
+  def test_find_by_id
+    customer = customer_repo.find_by_id(2)
+
+    assert_equal "Naiya", customer[:first_name]
+  end
+
+  def test_find_all_by_first_name
+    customer_repo.load_customer_searches
+    
+    assert_equal 1, customer_repo.find_all_by_first_name("Alida").count
+  end
+
 end
