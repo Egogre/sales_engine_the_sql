@@ -57,4 +57,10 @@ module GeneralRepository
     ")
   end
 
+  def find_by_name(query_name)
+    db.execute("
+    SELECT * FROM #{table} WHERE name = '#{query_name}';
+    ")
+  end
+
 end

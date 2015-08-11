@@ -43,7 +43,7 @@ class SalesEngine
                                   :headers => true,
                                   :header_converters => :symbol,
                                   :converters => :numeric)
-    if Dir.glob("*.db")
+    if Dir.glob("*.db") == ["sales_engine.db"]
       @db = SQLite3::Database.open("sales_engine.db")
       db.results_as_hash = true
     else
@@ -156,7 +156,7 @@ class SalesEngine
     db.execute "
     CREATE TABLE items (id INTEGER PRIMARY KEY AUTOINCREMENT,
                             name VARCHAR(30),
-                            description VARCHAR(200),
+                            description VARCHAR(350),
                             unit_price INTEGER,
                             merchant_id INTEGER,
                             created_at DATETIME,

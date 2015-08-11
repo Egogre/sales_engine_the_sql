@@ -3,33 +3,18 @@ require_relative 'test_helper'
 class MerchantRepositoryTest < Minitest::Test
 attr_reader :merchant_repo
 
-  def setup
-    csv_table = [{
-                  :id => 1,
-                  :name => "Fun Guys"
-                 },
-                 {
-                  :id => 2,
-                  :name => "Interesting Folk"
-                 },
-                 {
-                  :id => 3,
-                  :name => "Dirty Villagers"
-                 }]
-    engine = "Pretend Engine"
-    @merchant_repo = MerchantRepository.new(csv_table, engine)
-  end
+def setup
+  engine = SalesEngine.new
+  engine.startup
+  @merchant_repo = engine.merchant_repository
+end
 
   def test_it_exists
     assert merchant_repo
   end
 
-  def test_it_converts_to_hash
-    assert_kind_of Hash, merchant_repo.records
-  end
-
   def test_all_returns_all_merchants
-    assert_equal 3, merchant_repo.all.length
+    assert_equal 100, merchant_repo.all.length
   end
 
   def test_random
@@ -39,6 +24,17 @@ attr_reader :merchant_repo
     end
 
     refute_equal 1, instances.uniq.length
+  end
+
+  def test_find_by_id
+    merchant = merchant_repo.find_by_id(98)
+
+    assert_equal "Okuneva, Prohaska and Rolfson", merchant[0]["name"]
+  end
+
+  def test_find_by_name
+    query_name = "Sporer, Christiansen and Connelly"
+    assert_equal 56, merchant_repo.find_by_name(query_name)[0]["id"]
   end
 
 end

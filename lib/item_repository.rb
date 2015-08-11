@@ -7,4 +7,10 @@ class ItemRepository
     'items'
   end
 
+  def find_by_description(query_description)
+    db.execute("
+    SELECT * FROM items WHERE description = #{query_description};
+    ")
+  end
+
 end
