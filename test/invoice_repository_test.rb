@@ -3,39 +3,18 @@ require_relative 'test_helper'
 class InvoiceRepositoryTest < Minitest::Test
 attr_reader :invoice_repo
 
-  def setup
-    csv_table = [{
-                  :id => 1,
-                  :customer_id => 1,
-                  :merchant_id => 4,
-                  :status => "shipped"
-                 },
-                 {
-                  :id => 2,
-                  :customer_id => 2,
-                  :merchant_id => 4,
-                  :status => "shipped"
-                 },
-                 {
-                  :id => 3,
-                  :customer_id => 1,
-                  :merchant_id => 2,
-                  :status => "shipped"
-                 }]
-    engine = "Pretend Engine"
-    @invoice_repo = InvoiceRepository.new(csv_table, engine)
-  end
+def setup
+  engine = SalesEngine.new
+  engine.startup
+  @invoice_repo = engine.invoice_repository
+end
 
   def test_it_exists
     assert invoice_repo
   end
 
-  def test_it_converts_to_hash
-    assert_kind_of Hash, invoice_repo.records
-  end
-
   def test_all_returns_all_invoices
-    assert_equal 3, invoice_repo.all.length
+    assert_equal 4843, invoice_repo.all.length
   end
 
   def test_random
@@ -45,6 +24,24 @@ attr_reader :invoice_repo
     end
 
     refute_equal 1, instances.uniq.length
+  end
+
+  def test_find_by_id
+    invoice = invoice_repo.find_by_id(208)
+
+    assert_equal 42, invoice[0]["customer_id"]
+  end
+
+  def test_find_all_by_customer_id
+    assert_equal 6, invoice_repo.find_all_by_customer_id(15).count
+  end
+
+  def test_find_all_by_merchant_id
+    assert_equal 50, invoice_repo.find_all_by_merchant_id(32).count
+  end
+
+  def test_find_all_by_status
+    assert_equal 4843, invoice_repo.find_all_by_status("shipped").count
   end
 
 end
