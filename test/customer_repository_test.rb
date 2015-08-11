@@ -4,41 +4,20 @@ class CustomerRepositoryTest < Minitest::Test
 attr_reader :customer_repo
 
   def setup
-    csv_table = [{
-                  :id => 1,
-                  :first_name => "George",
-                  :last_name => "Hudson"
-                 },
-                 {
-                  :id => 2,
-                  :first_name => "Naiya",
-                  :last_name => "Washburn"
-                 },
-                 {
-                  :id => 3,
-                  :first_name => "Alida",
-                  :last_name => "Washburn"
-                 }]
-    engine = "Pretend Engine"
-    @customer_repo = CustomerRepository.new(csv_table, engine)
+    engine = SalesEngine.new
+    engine.startup
+    @customer_repo = engine.customer_repository
   end
 
   def test_it_exists
     assert customer_repo
   end
 
-  def test_it_converts_to_hash
-    skip
-    assert_kind_of Hash, customer_repo.records
-  end
-
   def test_all_returns_all_customers
-    skip
-    assert_equal 3, customer_repo.all.length
+    assert_equal 1000, customer_repo.all.length
   end
 
   def test_random
-    skip
     instances = []
     100.times do
       instances << customer_repo.random
@@ -48,24 +27,19 @@ attr_reader :customer_repo
   end
 
   def test_find_by_id
-    skip
     customer = customer_repo.find_by_id(2)
 
-    assert_equal "Naiya", customer[:first_name]
+    assert_equal "Cecelia", customer[0]["first_name"]
   end
 
-  def test_find_all_by_first_name
-    skip
-    customer_repo.load_customer_searches
-
-    assert_equal 1, customer_repo.find_all_by_first_name("Alida").count
+  def test_find_all_by_first_name_case_insensitive
+    assert_equal 1, customer_repo.find_all_by_first_name("leanne").count
+    assert_equal 1, customer_repo.find_all_by_first_name("Leanne").count
   end
 
-  def test_find_all_by_last_name
-    skip
-    customer_repo.load_customer_searches
-
-    assert_equal 2, customer_repo.find_all_by_last_name("Washburn").count
+  def test_find_all_by_last_name_case_insensitive
+    assert_equal 3, customer_repo.find_all_by_last_name("nader").count
+    assert_equal 3, customer_repo.find_all_by_last_name("Nader").count
   end
 
 end

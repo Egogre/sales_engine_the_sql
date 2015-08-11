@@ -7,6 +7,10 @@ class InvoiceItemRepository
               :invoice_items_by_quantity,
               :invoice_items_by_unit_price
 
+  def table
+    'invoice_items'
+  end
+
   def find_all_by_item_id(id)
     invoice_items_by_item_id[id]
   end

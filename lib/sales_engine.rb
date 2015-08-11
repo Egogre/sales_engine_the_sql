@@ -18,7 +18,6 @@ class SalesEngine
               :customer_table
 
   def initialize(csv_folder = nil)
-    `rm -rf "sales_engine.db"`
     csv_folder = csv_folder || File.expand_path('../../data',  __FILE__)
     @customers          = CSV.read("#{csv_folder}/customers.csv",
                                   :headers => true,
@@ -44,18 +43,27 @@ class SalesEngine
                                   :headers => true,
                                   :header_converters => :symbol,
                                   :converters => :numeric)
-    @db = SQLite3::Database.new("sales_engine.db")
-    db.results_as_hash = true
-    load_database_tables
+    if Dir.glob("*.db")
+      @db = SQLite3::Database.open("sales_engine.db")
+      db.results_as_hash = true
+    else
+      build_database
+    end
   end
 
   def startup
-    @customer_repository     = CustomerRepository.new(customers, self)
-    @invoice_item_repository = InvoiceItemRepository.new(invoice_items, self)
-    @invoice_repository      = InvoiceRepository.new(invoices, self)
-    @item_repository         = ItemRepository.new(items, self)
-    @merchant_repository     = MerchantRepository.new(merchants, self)
-    @transaction_repository  = TransactionRepository.new(transactions, self)
+    @customer_repository     = CustomerRepository.new(db)
+    @invoice_item_repository = InvoiceItemRepository.new(db)
+    @invoice_repository      = InvoiceRepository.new(db)
+    @item_repository         = ItemRepository.new(db)
+    @merchant_repository     = MerchantRepository.new(db)
+    @transaction_repository  = TransactionRepository.new(db)
+  end
+
+  def build_database
+    @db = SQLite3::Database.new("sales_engine.db")
+    db.results_as_hash = true
+    load_database_tables
   end
 
   def load_database_tables

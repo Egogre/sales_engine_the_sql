@@ -1,23 +1,24 @@
 require 'sqlite3'
 
 module GeneralRepository
-  attr_reader :db, :engine, :csv_table
+  attr_reader :db
 
-  def initialize(csv_table, engine)
-    @csv_table = csv_table
-    @engine = engine
+  def initialize(database)
+    @db = database
   end
 
   def all
-    records
+    db.execute("SELECT * FROM #{table}")
   end
 
   def random
-    records.values.sample
+    @table_length ||= all.count
+    random_id = rand(1..@table_length)
+    db.execute("SELECT * FROM #{table} WHERE id = #{random_id}")
   end
 
   def find_by_id(value)
-    records[value]
+    db.execute("SELECT * FROM #{table} WHERE id = #{value}")
   end
 
 end
