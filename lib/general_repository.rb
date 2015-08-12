@@ -24,7 +24,7 @@ module GeneralRepository
   def find_by_id(query_id)
     db.execute("
     SELECT * FROM #{table} WHERE id = #{query_id};
-    ")
+    ")[0]
   end
 
   def find_all_by_created_at(query_date)
