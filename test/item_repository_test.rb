@@ -37,10 +37,11 @@ end
   end
 
   def test_find_by_description
-    description = "Sunt officia eum qui molestiae. Nesciunt quidem cupiditate
-                   reiciendis est commodi non. Atque eveniet sed. Illum
-                   excepturi praesentium reiciendis voluptatibus eveniet odit
-                   perspiciatis. Odio optio nisi rerum nihil ut."
+    part1 = "Sunt officia eum qui molestiae. Nesciunt quidem cupiditate "
+    part2 = "reiciendis est commodi non. Atque eveniet sed. Illum excepturi "
+    part3 = "praesentium reiciendis voluptatibus eveniet odit perspiciatis. "
+    part4 = "Odio optio nisi rerum nihil ut."
+    description = part1 + part2 +part3 + part4
     assert_equal 3, item_repo.find_by_description(description)[0]["id"]
   end
 
