@@ -1,4 +1,5 @@
 require_relative 'general_repository'
+require_relative 'transaction'
 
 class TransactionRepository
   include GeneralRepository

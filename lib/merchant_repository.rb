@@ -1,4 +1,5 @@
 require_relative 'general_repository'
+require_relative 'merchant'
 
 class MerchantRepository
   include GeneralRepository

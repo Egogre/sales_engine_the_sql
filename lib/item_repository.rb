@@ -1,4 +1,5 @@
 require_relative 'general_repository'
+require_relative 'item'
 
 class ItemRepository
   include GeneralRepository
