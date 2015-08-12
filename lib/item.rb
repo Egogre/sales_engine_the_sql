@@ -9,11 +9,17 @@ class Item
   end
 
   def invoice_items
-    all_referred_by sales_engine.invoice_item_repository
+    invoice_item_list = db.execute("
+    SELECT * FROM invoice_items WHERE item_id = (#{attributes["id"]});
+    ")
+    invoice_item_list.map {|invoice_item| InvoiceItem.new(invoice_item, db)}
   end
 
   def merchant
-    refers_to sales_engine.merchant_repository
+    merchant_data = db.execute("
+    SELECT * FROM merchants WHERE id = (#{attributes["merchant_id"]});
+    ")
+    Merchant.new(merchant_data[0], db)
   end
 
   def best_day

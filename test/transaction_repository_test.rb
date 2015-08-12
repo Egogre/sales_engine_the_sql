@@ -30,8 +30,8 @@ end
     transaction1 = transaction_repo.find_by_id(432)
     transaction2 = transaction_repo.find_by_id(12)
 
-    assert_equal 372, transaction1[0]["invoice_id"]
-    assert_equal "failed", transaction2[0]["result"]
+    assert_equal 372, transaction1["invoice_id"]
+    assert_equal "failed", transaction2["result"]
   end
 
   def test_find_all_by_invoice_id

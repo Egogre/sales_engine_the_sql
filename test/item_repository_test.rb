@@ -30,8 +30,8 @@ end
     item1 = item_repo.find_by_id(196)
     item2 = item_repo.find_by_id(36)
 
-    assert_equal 9, item1[0]["merchant_id"]
-    assert_equal "Item Omnis Molestiae", item2[0]["name"]
+    assert_equal 9, item1["merchant_id"]
+    assert_equal "Item Omnis Molestiae", item2["name"]
   end
 
   def test_find_by_name

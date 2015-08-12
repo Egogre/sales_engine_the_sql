@@ -1,6 +1,7 @@
-require_relative 'data_instance'
+require_relative 'instance_module'
 
-class InvoiceItem < DataInstance
+class InvoiceItem
+  include InstanceModule
   attr_reader :item_id, :invoice_id, :quantity, :unit_price
 
   def type_name
@@ -8,7 +9,10 @@ class InvoiceItem < DataInstance
   end
 
   def invoice
-    repository.sales_engine.invoice_repository.find_by(:id, invoice_id)
+    invoice_data = db.execute("
+    SELECT * FROM invoices WHERE id = #{attributes["invoice_id"]};
+    ")
+    Invoice.new(invoice_data[0], db)
   end
 
   def item

@@ -30,8 +30,8 @@ end
     invoice1 = invoice_repo.find_by_id(208)
     invoice2 = invoice_repo.find_by_id(32)
 
-    assert_equal 42, invoice1[0]["customer_id"]
-    assert_equal 85, invoice2[0]["merchant_id"]
+    assert_equal 42, invoice1["customer_id"]
+    assert_equal 85, invoice2["merchant_id"]
   end
 
   def test_find_all_by_customer_id

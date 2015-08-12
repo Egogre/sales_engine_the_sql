@@ -9,7 +9,9 @@ class Transaction
   end
 
   def invoice
-    # returns an instance of Invoice associated with this object
-    repository.sales_engine.invoice_repository.find_by(:id, invoice_id)
+    invoice_data = db.execute("
+    SELECT * FROM invoices WHERE id = (#{attributes["invoice_id"]});
+    ")
+    Invoice.new(invoice_data[0], db)
   end
 end

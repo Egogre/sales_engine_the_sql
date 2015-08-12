@@ -1,107 +1,103 @@
 require_relative 'test_helper'
 
 class InvoiceTest < Minitest::Test
+  attr_reader :invoice_repo, :db
 
-  @@engine = SalesEngine.new
-  @@engine.startup
-
-  def engine
-    @@engine
+  def setup
+    engine = SalesEngine.new
+    engine.startup
+    @db = engine.db
+    @invoice_repo = engine.invoice_repository
   end
 
-  def test_transactions__it_gets_an_array_of_them
-    invoice = engine.invoice_repository.find_by(:id, "12")
+  def test_it_gets_an_array_of_transactions
+    invoice = Invoice.new(invoice_repo.find_by_id(11), db)
 
     assert_equal Array, invoice.transactions.class
-    assert invoice.transactions.all?{|transaction| transaction.class == Transaction}
+    assert invoice.transactions.all? do |transaction|
+      transaction.class == Transaction
+    end
   end
 
-  def test_transactions__it_gets_the_correct_ones
-    invoice = engine.invoice_repository.find_by(:id, "12")
-    transaction_ids = invoice.transactions.map {|transaction| transaction.id}
-    cc_numbers = invoice.transactions.map {|transaction| transaction.credit_card_number}
+  def test_it_gets_the_correct_transactions
+    invoice = Invoice.new(invoice_repo.find_by_id(12), db)
+    transaction_ids = invoice.transactions.map do |transaction|
+      transaction.attributes["id"]
+    end
+    cc_numbers = invoice.transactions.map do |transaction|
+      transaction.attributes["credit_card_number"]
+    end
 
-    assert_equal ['11', '12', '13'], transaction_ids
-  	assert_equal ['4800749911485986', '4017503416578382', '4536896898764278'], cc_numbers
+    assert_equal [11, 12, 13], transaction_ids
+  	assert_equal [4800749911485986,
+                  4017503416578382,
+                  4536896898764278], cc_numbers
   end
 
-  def test_transactions__it_returns_an_empty_array_when_no_transactions_are_associated_with_the_invoice
-    invoice = engine.invoice_repository.find_by(:id, "999")
-
-    assert_equal [], invoice.transactions
-  end
-
-  def test_invoice_items__it_gets_an_array_of_them
-    invoice = engine.invoice_repository.find_by(:id, "12")
+  def test_it_gets_an_array_of_invoice_items
+    invoice = Invoice.new(invoice_repo.find_by_id(12), db)
 
     assert_equal Array, invoice.invoice_items.class
     assert invoice.invoice_items.all?{|invoice_item| invoice_item.class == InvoiceItem}
   end
 
-  def test_invoice_items__it_gets_the_correct_ones
-    invoice = engine.invoice_repository.find_by(:id, "12")
-    invoice_item_ids = invoice.invoice_items.map {|invoice_item| invoice_item.id}
-    item_prices = invoice.invoice_items.map {|invoice_item| invoice_item.unit_price}
+  def test_it_gets_the_correct_invoice_items
+    invoice = Invoice.new(invoice_repo.find_by_id(12), db)
+    invoice_item_ids = invoice.invoice_items.map do |invoice_item|
+      invoice_item.attributes["id"]
+    end
+    item_prices = invoice.invoice_items.map do |invoice_item|
+      invoice_item.attributes["unit_price"]
+    end
 
-    assert_equal ['56', '57', '58', '59', '60', '61'], invoice_item_ids
-    assert_equal ['78031', '41702', '71340', '7196', '41702', '22546'], item_prices
+    assert_equal [56, 57, 58, 59, 60, 61], invoice_item_ids
+    assert_equal [78031, 41702, 71340, 7196, 41702, 22546], item_prices
   end
 
-  def test_invoice_items__it_returns_an_empty_array_when_no_invoice_items_are_associated_with_the_invoice
-    invoice = engine.invoice_repository.find_by(:id, "999")
-
-    assert_equal [], invoice.invoice_items
-  end
-
-  def test_items__it_gets_an_array_of_items
-    invoice = engine.invoice_repository.find_by(:id, "12")
+  def test_it_gets_an_array_of_items
+    invoice = Invoice.new(invoice_repo.find_by_id(34), db)
 
     assert_equal Array, invoice.items.class
     assert invoice.items.all?{|item| item.class == Item}
-
   end
 
-  def test_items__it_gets_the_correct_items
-    invoice = engine.invoice_repository.find_by(:id, "12")
-    item_ids = invoice.items.map {|item| item.id}
-    item_prices = invoice.items.map {|item| item.unit_price}
+  def test_it_gets_the_correct_items
+    invoice = Invoice.new(invoice_repo.find_by_id(12), db)
+    item_ids = invoice.items.map {|item| item.attributes["id"]}
+    item_prices = invoice.items.map {|item| item.attributes["unit_price"]}
 
-    assert_equal ['150', '127', '156', '160', '134'], item_ids
-    assert_equal ['78031', '41702', '71340', '7196', '22546'], item_prices
+    assert_equal [127, 134, 150, 156, 160], item_ids
+    assert_equal [41702, 22546, 78031, 71340, 7196], item_prices
   end
 
-  def test_items__it_returns_an_empty_array_when_no_items_are_associated_with_the_invoice
-    invoice = engine.invoice_repository.find_by(:id, "999")
-
-    assert_equal [], invoice.items
-  end
-
-  def test_customer__it_can_pull_a_customer
-    invoice = engine.invoice_repository.find_by(:id, "12")
+  def test_it_can_pull_a_customer
+    invoice = Invoice.new(invoice_repo.find_by_id(97), db)
 
     assert_equal Customer, invoice.customer.class
   end
 
-  def test_customer__it_pulls_the_correct_customer
-    invoice = engine.invoice_repository.find_by(:id, "12")
+  def test_it_pulls_the_correct_customer
+    invoice = Invoice.new(invoice_repo.find_by_id(67), db)
 
-    assert_equal "Mariah", invoice.customer.first_name
+    assert_equal "Katrina", invoice.customer.attributes["first_name"]
   end
 
-  def test_merchant__it_can_pull_a_merchant
-    invoice = engine.invoice_repository.find_by(:id, "12")
+  def test_it_can_pull_a_merchant
+    invoice = Invoice.new(invoice_repo.find_by_id(103), db)
 
     assert_equal Merchant, invoice.merchant.class
   end
 
   def test_merchant__it_pulls_the_correct_merchant
-    invoice = engine.invoice_repository.find_by(:id, "12")
+    invoice = Invoice.new(invoice_repo.find_by_id(22), db)
 
-    assert_equal "Osinski, Pollich and Koelpin", invoice.merchant.name
+    result = invoice.merchant.attributes["name"]
+
+    assert_equal "Pacocha-Mayer", result
   end
 
   def test_it_knows_type_name
-    invoice = engine.invoice_repository.find_by(:id, "12")
+    invoice = Invoice.new(invoice_repo.find_by_id(1), db)
 
     assert_equal :invoice, invoice.type_name
   end

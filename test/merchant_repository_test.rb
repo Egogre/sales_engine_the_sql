@@ -30,8 +30,8 @@ end
     merchant1 = merchant_repo.find_by_id(98)
     merchant2 = merchant_repo.find_by_id(11)
 
-    assert_equal "Okuneva, Prohaska and Rolfson", merchant1[0]["name"]
-    assert_equal "Pollich and Sons", merchant2[0]["name"]
+    assert_equal "Okuneva, Prohaska and Rolfson", merchant1["name"]
+    assert_equal "Pollich and Sons", merchant2["name"]
   end
 
   def test_find_by_name
