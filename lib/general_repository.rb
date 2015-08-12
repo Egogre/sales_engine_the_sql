@@ -1,10 +1,16 @@
 require 'sqlite3'
 
 module GeneralRepository
-  attr_reader :db
+  attr_reader :db, :all
 
   def initialize(database)
     @db = database
+    all_data = db.execute("
+    SELECT * FROM #{table};
+    ")
+    @all = all_data.map do |instance_data|
+      instance_class(instance_data, db)
+    end
   end
 
   def all

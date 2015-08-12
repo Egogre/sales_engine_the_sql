@@ -7,6 +7,10 @@ class TransactionRepository
     'transactions'
   end
 
+  def instance_class(attributes, database)
+    Transaction.new(attributes, database)
+  end
+
   def find_by_credit_card_number(card_number)
     db.execute("
     SELECT * FROM transactions WHERE credit_card_number = #{card_number};

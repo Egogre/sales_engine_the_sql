@@ -8,6 +8,10 @@ class CustomerRepository
     'customers'
   end
 
+  def instance_class(attributes, database)
+    Customer.new(attributes, database)
+  end
+
   def find_all_by_first_name(name)
     db.execute("
     SELECT * FROM customers WHERE

@@ -7,6 +7,10 @@ class InvoiceRepository
     'invoices'
   end
 
+  def instance_class(attributes, database)
+    Invoice.new(attributes, database)
+  end
+
   def find_all_by_customer_id(query_id)
     db.execute("
     SELECT * FROM invoices WHERE customer_id = #{query_id};

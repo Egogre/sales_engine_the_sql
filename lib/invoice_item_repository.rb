@@ -7,6 +7,10 @@ class InvoiceItemRepository
     'invoice_items'
   end
 
+  def instance_class(attributes, database)
+    InvoiceItem.new(attributes, database)
+  end
+
   def find_all_by_item_id(query_id)
     db.execute("
     SELECT * FROM invoice_items WHERE item_id = #{query_id};

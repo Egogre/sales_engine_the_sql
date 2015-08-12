@@ -42,4 +42,14 @@ end
     assert_equal 90, merchant_repo.find_by_name(query_name2)[0]["id"]
   end
 
+  def test_most_revenue
+    top_3 = 3
+
+    expected = {"Okuneva, Prohaska and Rolfson"=>"$124181.06",
+                "Bechtelar, Jones and Stokes"=>"$110898.05",
+                "Tromp Inc"=>"$78824.63"}
+
+    assert_equal expected, merchant_repo.most_revenue(top_3)
+  end
+
 end
