@@ -8,6 +8,13 @@ class InvoiceItem
     :invoice_item
   end
 
+  def assign_class_specific_attributes
+    @item_id = attributes["item_id"]
+    @invoice_id = attributes["invoice_id"]
+    @quantity = attributes["quantity"]
+    @unit_price = attributes["unit_price"]
+  end
+
   def invoice
     invoice_data = db.execute("
     SELECT * FROM invoices WHERE id = #{attributes["invoice_id"]};

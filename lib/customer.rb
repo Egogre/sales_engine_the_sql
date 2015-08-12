@@ -9,6 +9,11 @@ class Customer
     :customer
   end
 
+  def assign_class_specific_attributes
+    @first_name = attributes["first_name"]
+    @last_name = attributes["last_name"]
+  end
+
   def id_column
     "customer_id"
   end

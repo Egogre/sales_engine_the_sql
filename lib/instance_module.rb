@@ -1,11 +1,15 @@
 require 'sqlite3'
 
 module InstanceModule
-  attr_reader :db, :attributes
+  attr_reader :db, :attributes, :id, :created_at, :updated_at
 
   def initialize(attributes, database)
     @db = database
     @attributes = attributes
+    @id = attributes["id"]
+    @created_at = attributes["created_at"]
+    @updated_at = attributes["updated_at"]
+    assign_class_specific_attributes
   end
 
   def invoices

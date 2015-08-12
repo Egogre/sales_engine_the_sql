@@ -10,6 +10,10 @@ class Merchant
     :merchant
   end
 
+  def assign_class_specific_attributes
+    @name = attributes["name"]
+  end
+
   def id_column
     "merchant_id"
   end

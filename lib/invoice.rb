@@ -9,6 +9,12 @@ class Invoice
     :invoice
   end
 
+  def assign_class_specific_attributes
+    @customer_id = attributes["customer_id"]
+    @merchant_id = attributes["marchant_id"]
+    @status = attributes["status"]
+  end
+
   def transactions
     transaction_list = db.execute("
     SELECT * FROM transactions WHERE invoice_id = (#{attributes["id"]});
