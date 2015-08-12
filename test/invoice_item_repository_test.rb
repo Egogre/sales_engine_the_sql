@@ -27,29 +27,37 @@ end
   end
 
   def test_find_by_id
-    invoice_item = invoice_item_repo.find_by_id(2)
+    invoice_item1 = invoice_item_repo.find_by_id(2)
+    invoice_item2 = invoice_item_repo.find_by_id(302)
 
-    assert_equal 528, invoice_item[0]["item_id"]
+    assert_equal 528, invoice_item1[0]["item_id"]
+    assert_equal 64747, invoice_item2[0]["unit_price"]
   end
 
   def test_find_all_by_item_id
     assert_equal 17, invoice_item_repo.find_all_by_item_id(3).count
+    assert_equal 35, invoice_item_repo.find_all_by_item_id(211).count
   end
 
   def test_find_all_by_invoice_id
     assert_equal 4, invoice_item_repo.find_all_by_invoice_id(5).count
+    assert_equal 6, invoice_item_repo.find_all_by_invoice_id(103).count
   end
 
   def test_find_all_by_quantity
-    invoice_item_array = invoice_item_repo.find_all_by_quantity(10)
+    invoice_item_array1 = invoice_item_repo.find_all_by_quantity(10)
+    invoice_item_array2 = invoice_item_repo.find_all_by_quantity(4)
 
-    assert_equal 2140, invoice_item_array.count
+    assert_equal 2140, invoice_item_array1.count
+    assert_equal 2231, invoice_item_array2.count
   end
 
   def test_find_all_by_unit_price
-    invoice_item_array = invoice_item_repo.find_all_by_unit_price(34873)
+    invoice_item_array1 = invoice_item_repo.find_all_by_unit_price(34873)
+    invoice_item_array2 = invoice_item_repo.find_all_by_unit_price(3590)
 
-    assert_equal 10, invoice_item_array.count
+    assert_equal 10, invoice_item_array1.count
+    assert_equal 111, invoice_item_array2.count
   end
 
 end

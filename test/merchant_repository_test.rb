@@ -27,14 +27,19 @@ end
   end
 
   def test_find_by_id
-    merchant = merchant_repo.find_by_id(98)
+    merchant1 = merchant_repo.find_by_id(98)
+    merchant2 = merchant_repo.find_by_id(11)
 
-    assert_equal "Okuneva, Prohaska and Rolfson", merchant[0]["name"]
+    assert_equal "Okuneva, Prohaska and Rolfson", merchant1[0]["name"]
+    assert_equal "Pollich and Sons", merchant2[0]["name"]
   end
 
   def test_find_by_name
-    query_name = "Sporer, Christiansen and Connelly"
-    assert_equal 56, merchant_repo.find_by_name(query_name)[0]["id"]
+    query_name1 = "Sporer, Christiansen and Connelly"
+    query_name2 = "Friesen, Hackett and Runte"
+
+    assert_equal 56, merchant_repo.find_by_name(query_name1)[0]["id"]
+    assert_equal 90, merchant_repo.find_by_name(query_name2)[0]["id"]
   end
 
 end

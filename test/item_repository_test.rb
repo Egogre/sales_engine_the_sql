@@ -27,13 +27,18 @@ end
   end
 
   def test_find_by_id
-    item = item_repo.find_by_id(196)
+    item1 = item_repo.find_by_id(196)
+    item2 = item_repo.find_by_id(36)
 
-    assert_equal 9, item[0]["merchant_id"]
+    assert_equal 9, item1[0]["merchant_id"]
+    assert_equal "Item Omnis Molestiae", item2[0]["name"]
   end
 
   def test_find_by_name
-    assert_equal 67076, item_repo.find_by_name("Item Autem Minima")[0]["unit_price"]
+    result1 = item_repo.find_by_name("Item Autem Minima")
+    result2 = item_repo.find_by_name("Item Aut Id")
+    assert_equal 67076, result1[0]["unit_price"]
+    assert_equal 283, result2[0]["id"]
   end
 
   def test_find_by_description
@@ -47,10 +52,12 @@ end
 
   def test_find_all_by_unit_price
     assert_equal 2, item_repo.find_all_by_unit_price(75107).count
+    assert_equal 1, item_repo.find_all_by_unit_price(18715).count
   end
 
   def test_find_all_by_merchant_id
     assert_equal 9, item_repo.find_all_by_merchant_id(29).count
+    assert_equal 45, item_repo.find_all_by_merchant_id(86).count
   end
 
 end

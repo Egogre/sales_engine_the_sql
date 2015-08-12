@@ -27,17 +27,21 @@ end
   end
 
   def test_find_by_id
-    invoice = invoice_repo.find_by_id(208)
+    invoice1 = invoice_repo.find_by_id(208)
+    invoice2 = invoice_repo.find_by_id(32)
 
-    assert_equal 42, invoice[0]["customer_id"]
+    assert_equal 42, invoice1[0]["customer_id"]
+    assert_equal 85, invoice2[0]["merchant_id"]
   end
 
   def test_find_all_by_customer_id
     assert_equal 6, invoice_repo.find_all_by_customer_id(15).count
+    assert_equal 4, invoice_repo.find_all_by_customer_id(67).count
   end
 
   def test_find_all_by_merchant_id
     assert_equal 50, invoice_repo.find_all_by_merchant_id(32).count
+    assert_equal 43, invoice_repo.find_all_by_merchant_id(3).count
   end
 
   def test_find_all_by_status
