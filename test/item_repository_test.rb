@@ -60,4 +60,20 @@ end
     assert_equal 45, item_repo.find_all_by_merchant_id(86).count
   end
 
+  def test_it_finds_items_with_most_revenue
+    top_x_items = 3
+
+    expected = "Item Delectus Saepe"
+
+    assert_equal expected, repo.most_revenue(top_x_items)[2].name
+  end
+
+  def test_it_finds_most_sold_items
+    top_x_items = 3
+
+    expected = "Item Nam Magnam"
+
+    assert_equal expected, repo.most_items(top_x_items)[1].name
+  end
+
 end

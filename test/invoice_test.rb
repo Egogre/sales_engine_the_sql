@@ -101,4 +101,16 @@ class InvoiceTest < Minitest::Test
 
     assert_equal :invoice, invoice.type_name
   end
+
+  def test_it_charges_card_for_transaction
+    invoice = engine.invoice_repository.find_by_id(3)
+    prior_transaction_count = invoice.transactions.count
+
+    invoice.charge(credit_card_number: '1111222233334444',
+                   credit_card_expiration_date: "10/14",
+                   result: "success")
+
+    invoice = engine.invoice_repository.find_by_id(invoice.id)
+    assert_equal invoice.transactions.count, prior_transaction_count.next
+  end
 end

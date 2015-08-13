@@ -3,7 +3,7 @@ require_relative 'item'
 
 class Invoice
   include InstanceModule
-  attr_reader :customer_id, :merchant_id, :status
+  attr_reader :customer_id, :merchant_id, :status, :time
 
   def type_name
     :invoice
@@ -50,11 +50,33 @@ class Invoice
     Merchant.new(merchant_data[0], db)
   end
 
+  def charge(*card_attributes)
+    @time = Time.now.utc
+    vals = [id,
+            card_attributes[0][:credit_card_number],
+            card_attributes[0][:credit_card_expiration_date],
+            card_attributes[0][:result],
+            "#{time}",
+            "#{time}"]
+    db.execute("
+    INSERT INTO transactions (#{transactions_columns}) VALUES (?,?,?,?,?,?);
+    ", vals)
+  end
+
   private
 
   def item_ids
     ids = invoice_items.map {|invoice_item| invoice_item.attributes["item_id"]}
     ids.join(", ")
+  end
+
+  def transactions_columns
+    'invoice_id,
+     credit_card_number,
+     credit_card_expiration_date,
+     result,
+     created_at,
+     updated_at'
   end
 
 end
