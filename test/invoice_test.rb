@@ -109,12 +109,6 @@ class InvoiceTest < Minitest::Test
     assert_equal "Pacocha-Mayer", result
   end
 
-  def test_it_knows_type_name
-    invoice = invoice_repo.find_by_id(1)
-
-    assert_equal :invoice, invoice.type_name
-  end
-
   def test_it_charges_card_for_transaction
     invoice = engine.invoice_repository.find_by_id(3)
     prior_transaction_count = invoice.transactions.count

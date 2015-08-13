@@ -7,10 +7,6 @@ class Transaction
               :credit_card_expiration_date,
               :result
 
-  def type_name
-    :transaction
-  end
-
   def assign_class_specific_attributes
     @invoice_id = attributes["invoice_id"]
     @credit_card_number = attributes["credit_card_number"]

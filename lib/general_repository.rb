@@ -14,6 +14,10 @@ module GeneralRepository
     end
   end
 
+  def inspect
+    "#<#{self.class} #{all.size} rows>"
+  end
+
   def random
     @table_length ||= all.count
     random_id = rand(1..@table_length)
@@ -98,9 +102,7 @@ module GeneralRepository
     end
   end
 
-  def inspect
-    "#<#{self.class} #{all.size} rows>"
-  end
+  private
 
   def successful_transaction_invoice_ids
     db.execute("
@@ -114,8 +116,6 @@ module GeneralRepository
     WHERE invoice_id IN (#{string_invoice_ids});
     ")
   end
-
-  private
 
   def string_invoice_ids
     successful_transaction_invoice_ids.join(", ")

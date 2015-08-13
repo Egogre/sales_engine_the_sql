@@ -21,6 +21,8 @@ module InstanceModule
     invoice_list.map {|invoice| Invoice.new(invoice, db)}
   end
 
+  private
+
   def successful_transaction_invoice_ids
     db.execute("
     SELECT invoice_id FROM transactions WHERE result = 'success';
@@ -33,8 +35,6 @@ module InstanceModule
     WHERE invoice_id IN (#{string_invoice_ids});
     ")
   end
-
-  private
 
   def string_invoice_ids
     successful_transaction_invoice_ids.join(", ")

@@ -5,10 +5,6 @@ class CustomerRepository
   include GeneralRepository
   attr_reader
 
-  def table
-    'customers'
-  end
-
   def instance_class(attributes, database)
     Customer.new(attributes, database)
   end
@@ -47,6 +43,12 @@ class CustomerRepository
     last_name = '#{name.downcase}' COLLATE NOCASE;
     ")[0]
     instance_class(name_data, db)
+  end
+
+  private
+
+  def table
+    'customers'
   end
 
 end

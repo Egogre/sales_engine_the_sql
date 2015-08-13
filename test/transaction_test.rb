@@ -10,6 +10,17 @@ class TransactionTest < Minitest::Test
     @transaction_repo = engine.transaction_repository
   end
 
+  def test_it_has_attributes
+    transaction = transaction_repo.find_by_id(9)
+
+    assert_equal 9, transaction.id
+    assert_equal 10, transaction.invoice_id
+    assert_equal 4140149827486249, transaction.credit_card_number
+    assert_equal "success", transaction.result
+    assert_equal "2012-03-27 14:54:10 UTC", transaction.created_at
+    assert_equal "2012-03-27 14:54:10 UTC", transaction.updated_at
+  end
+
   def test_it_can_pull_an_invoice
     transaction = transaction_repo.find_by_id(3)
 
@@ -23,9 +34,4 @@ class TransactionTest < Minitest::Test
     assert_equal 33, transaction.invoice.attributes["merchant_id"]
   end
 
-  def test_knows_own_type_name
-    transaction = transaction_repo.find_by_id(625)
-
-    assert_equal :transaction, transaction.type_name
-  end
 end

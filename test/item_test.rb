@@ -11,7 +11,7 @@ class ItemTest < Minitest::Test
   end
 
   def test_it_has_attributes
-    invoice = item_repo.find_by_id(61)
+    item = item_repo.find_by_id(61)
 
     assert_equal 61, item.id
     assert_equal "Item Quas Maiores", item.name
@@ -65,9 +65,4 @@ class ItemTest < Minitest::Test
     assert_equal expected, item.best_day
   end
 
-  def test_it_knows_own_type_name
-    item = engine.item_repository.find_by(:id, 127)
-
-    assert_equal :item, item.type_name
-  end
 end

@@ -5,10 +5,6 @@ class Invoice
   include InstanceModule
   attr_reader :customer_id, :merchant_id, :status, :time
 
-  def type_name
-    :invoice
-  end
-
   def assign_class_specific_attributes
     @customer_id = attributes["customer_id"]
     @merchant_id = attributes["merchant_id"]

@@ -6,3 +6,4 @@ gem 'reek'
 gem 'rake'
 gem 'minitest'
 gem 'sqlite3'
+gem 'simplecov', :require => false, :group => :test

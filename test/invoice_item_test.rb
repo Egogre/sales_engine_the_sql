@@ -48,9 +48,4 @@ class InvoiceItemTest < Minitest::Test
     assert_equal 76941, invoice_item.item.unit_price
   end
 
-  def test_it_knows_type_name
-    invoice_item = engine.invoice_item_repository.find_by(:id, 13)
-
-    assert_equal :invoice_item, invoice_item.type_name
-  end
 end

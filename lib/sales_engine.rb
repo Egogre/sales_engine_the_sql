@@ -67,6 +67,8 @@ class SalesEngine
     @transaction_repository  = TransactionRepository.new(db)
   end
 
+  private
+
   def build_database
     @db = SQLite3::Database.new("sales_engine.db")
     db.results_as_hash = true

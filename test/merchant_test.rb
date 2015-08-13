@@ -10,6 +10,15 @@ class MerchantTest < Minitest::Test
     @merchant_repo = engine.merchant_repository
   end
 
+  def test_it_has_attributes
+    marchant = merchant_repo.find_by_id(84)
+
+    assert_equal 84, merchant.id
+    assert_equal "Terry-Moore", merchant.name
+    assert_equal "2012-03-27 14:54:07 UTC", merchant.created_at
+    assert_equal "2012-03-27 14:54:07 UTC", merchant.updated_at
+  end
+
   def test_it_returns_an_array_of_items
     merchant = merchant_repo.find_by_id(11)
 
@@ -77,7 +86,7 @@ class MerchantTest < Minitest::Test
 
   def test_it_finds_revenue_by_date
     date = Date.parse("2012-03-27")
-    merchant = engine.merchant_repository.find_by(:id, 4)
+    merchant = merchant_repo.find_by_id(4)
 
     expected = BigDecimal.new('1291.44')
 
@@ -93,16 +102,11 @@ class MerchantTest < Minitest::Test
   end
 
   def test_it_finds_customers_with_pending_invoices
-    merchant = engine.merchant_repository.find_by(:id, "34")
+    merchant = merchant_repo.find_by_id(34)
 
     expected = {"3"=>"Mariah Toy", "169"=>"Valentine Lang", "184"=>"Cyril Kilback"}
 
     assert_equal expected, merchant.customers_with_pending_invoices
   end
 
-  def test_knows_own_type_name
-    merchant = engine.merchant_repository.find_by(:id, "34")
-
-    assert_equal :merchant, merchant.type_name
-  end
 end

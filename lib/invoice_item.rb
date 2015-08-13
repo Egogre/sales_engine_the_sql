@@ -4,10 +4,6 @@ class InvoiceItem
   include InstanceModule
   attr_reader :item_id, :invoice_id, :quantity, :unit_price
 
-  def type_name
-    :invoice_item
-  end
-
   def assign_class_specific_attributes
     @item_id = attributes["item_id"]
     @invoice_id = attributes["invoice_id"]

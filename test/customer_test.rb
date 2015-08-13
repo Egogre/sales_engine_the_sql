@@ -54,9 +54,4 @@ class CustomerTest < Minitest::Test
     assert_equal expected, customer.favorite_merchant
   end
 
-  def test_it_knows_own_type_by_default
-    customer = engine.customer_repository.find_by(:id, "16")
-
-    assert_equal :customer, customer.type_name
-  end
 end

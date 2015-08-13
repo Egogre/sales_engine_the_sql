@@ -5,17 +5,9 @@ class Customer
   include InstanceModule
   attr_reader :first_name, :last_name
 
-  def type_name
-    :customer
-  end
-
   def assign_class_specific_attributes
     @first_name = attributes["first_name"]
     @last_name = attributes["last_name"]
-  end
-
-  def id_column
-    "customer_id"
   end
 
   def transactions
@@ -34,6 +26,10 @@ class Customer
   end
 
   private
+
+  def id_column
+    "customer_id"
+  end
 
   def invoice_ids
     invoices.map {|invoice| invoice.attributes["id"]}.join(", ")

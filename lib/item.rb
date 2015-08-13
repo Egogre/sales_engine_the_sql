@@ -4,10 +4,6 @@ class Item
   include InstanceModule
   attr_reader :name, :description, :unit_price, :merchant_id
 
-  def type_name
-    :item
-  end
-
   def id_column
     "item_id"
   end

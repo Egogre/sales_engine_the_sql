@@ -6,10 +6,6 @@ class Merchant
   include InstanceModule
   attr_reader :name, :total_revenue, :total_items_sold
 
-  def type_name
-    :merchant
-  end
-
   def assign_class_specific_attributes
     @name = attributes["name"]
     @total_revenue = revenue
@@ -34,6 +30,21 @@ class Merchant
       calculate_revenue(merchant_successful_invoice_items_on_date(date))
     end
   end
+
+  def favorite_customer
+    Customer.new(favorite_customer_data, db)
+  end
+
+  def customers_with_pending_invoices
+    bad_customers.map do |customer|
+      customer_data = db.execute("
+      SELECT * FROM customers WHERE id = #{customer[0]};
+      ")[0]
+      Customer.new(customer_data, db)
+    end
+  end
+
+  private
 
   def merchant_successful_invoice_items
     successful_invoice_items_qup.select do |invoice_item|
@@ -67,10 +78,6 @@ class Merchant
     end
   end
 
-  def favorite_customer
-    Customer.new(favorite_customer_data, db)
-  end
-
   def favorite_customer_data
     db.execute("
     SELECT * FROM customers WHERE id = #{fav_customer_id};
@@ -95,15 +102,6 @@ class Merchant
     db.execute("
     SELECT * FROM invoices WHERE id IN (#{string_invoice_ids});
     ").map {|invoice_data| Invoice.new(invoice_data, db)}
-  end
-
-  def customers_with_pending_invoices
-    bad_customers.map do |customer|
-      customer_data = db.execute("
-      SELECT * FROM customers WHERE id = #{customer[0]};
-      ")[0]
-      Customer.new(customer_data, db)
-    end
   end
 
   def bad_customers
