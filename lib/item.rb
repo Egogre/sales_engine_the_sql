@@ -8,6 +8,10 @@ class Item
     :item
   end
 
+  def id_column
+    "item_id"
+  end
+
   def assign_class_specific_attributes
     @name = attributes["name"]
     @decription = attributes["decription"]
@@ -30,27 +34,27 @@ class Item
   end
 
   def best_day
-    # returns the date with the most sales for the given item using the invoice date
-    #find all invoice invoice_items
-    #add quantity if transaction successful
-    hash = Hash.new(0)
-    invoice_items.each do |invoice_item|
-      hash[invoice_item.created_at[0..9]] += invoice_item.quantity.to_i if transaction_successful?(invoice_item)
+    number_sold_by_date.max_by {|date, revenue| revenue}[0]
+  end
+
+  private
+
+  def item_successful_invoice_items
+    successful_invoice_items_qup.select do |invoice_item|
+      invoice_item["item_id"] == id
     end
-    sales = hash.values.sort[-1]
-    date = hash.key(sales)
-    "best day for #{name} sales is #{date} with #{sales} units sold"
   end
 
-  def transaction_successful?(invoice_item)
-    item_transactions(invoice_item).any? {|transaction| transaction.result == "success"}
+  def number_sold_by_date
+    item_successful_invoice_items.each_with_object(Hash.new(0)) do |item, hash|
+      hash[Date.parse("#{item_invoiced_date(item)}")] += item["quantity"]
+    end
   end
 
-  def invoice(invoice_item)
-    repository.sales_engine.invoice_repository.find_by(:id, invoice_item.invoice_id)
+  def item_invoiced_date(item)
+    db.execute("
+    SELECT created_at FROM invoices WHERE id = #{item['invoice_id']};
+    ")[0]["created_at"]
   end
 
-  def item_transactions(invoice_item)
-    repository.sales_engine.transaction_repository.find_all_by(:invoice_id, invoice(invoice_item).id)
-  end
 end
