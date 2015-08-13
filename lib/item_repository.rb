@@ -23,14 +23,18 @@ class ItemRepository
   end
 
   def most_revenue(top_x_items)
-    top_items = item_ids_with_revenue.max_by(top_x_items) {|itemrev| itemrev[1]}
+    top_items = item_ids_with_revenue.max_by(top_x_items) do |itemrev|
+      itemrev[1]
+    end
     top_items.to_h.keys.map do |top_x_id|
       find_by_id(top_x_id)
     end
   end
 
   def most_items(top_x_items)
-    top_items = item_ids_sold.max_by(top_x_items) {|items_sold| items_sold[1]}
+    top_items = item_ids_sold.max_by(top_x_items) do |items_sold|
+      items_sold[1]
+    end
     top_items.to_h.keys.map do |top_x_id|
       find_by_id(top_x_id)
     end

@@ -10,6 +10,16 @@ class CustomerTest < Minitest::Test
     @customer_repo = engine.customer_repository
   end
 
+  def test_it_has_attributes
+    customer = customer_repo.find_by_id(3)
+
+    assert_equal 3, customer.id
+    assert_equal "Mariah", customer.first_name
+    assert_equal "Toy", customer.last_name
+    assert_equal "2012-03-27 14:54:10 UTC", customer.created_at
+    assert_equal "2012-03-27 14:54:10 UTC", customer.updated_at
+  end
+
   def test_it_returns_an_array_of_invoices
     customer = customer_repo.find_by_id(999)
 

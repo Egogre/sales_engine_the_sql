@@ -10,6 +10,17 @@ class InvoiceTest < Minitest::Test
     @invoice_repo = engine.invoice_repository
   end
 
+  def test_it_has_attributes
+    invoice = invoice_repo.find_by_id(14)
+
+    assert_equal 14, invoice.id
+    assert_equal 4, invoice.customer_id
+    assert_equal 44, invoice.merchant_id
+    assert_equal "shipped", invoice.status
+    assert_equal "2012-03-26 06:54:10 UTC", invoice.created_at
+    assert_equal "2012-03-26 06:54:10 UTC", invoice.updated_at
+  end
+
   def test_it_gets_an_array_of_transactions
     invoice = invoice_repo.find_by_id(11)
 
@@ -38,7 +49,9 @@ class InvoiceTest < Minitest::Test
     invoice = invoice_repo.find_by_id(12)
 
     assert_equal Array, invoice.invoice_items.class
-    assert invoice.invoice_items.all?{|invoice_item| invoice_item.class == InvoiceItem}
+    assert invoice.invoice_items.all? do |invoice_item|
+      invoice_item.class == InvoiceItem
+    end
   end
 
   def test_it_gets_the_correct_invoice_items

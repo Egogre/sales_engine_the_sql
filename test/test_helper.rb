@@ -3,6 +3,7 @@ require 'minitest/autorun'
 # require 'minitest/emoji'
 require 'bigdecimal'
 require 'csv'
+require 'date'
 
 require_relative '../lib/sales_engine'
 require_relative '../lib/customer_repository'

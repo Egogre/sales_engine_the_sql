@@ -1,4 +1,5 @@
 require 'sqlite3'
+require 'bigdecimal'
 
 module GeneralRepository
   attr_reader :db, :all, :time

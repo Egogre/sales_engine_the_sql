@@ -29,75 +29,87 @@ class Merchant
 
   def revenue(date = nil)
     if date.nil?
-      calculate_revenue(successful_invoices)
+      calculate_revenue(merchant_successful_invoice_items)
     else
-      calculate_revenue(successful_invoices_on_date(date))
+      calculate_revenue(merchant_successful_invoice_items_on_date(date))
+    end
+  end
+
+  def merchant_successful_invoice_items
+    successful_invoice_items_qup.select do |invoice_item|
+      db.execute("
+      SELECT * FROM invoices WHERE id = #{invoice_item["invoice_id"]};
+      ")[0]["merchant_id"] == id
+    end
+  end
+
+  def merchant_successful_invoice_items_on_date(date)
+    successful_invoice_items_qup.select do |invoice_item|
+      check = db.execute("
+      SELECT * FROM invoices WHERE id = #{invoice_item["invoice_id"]};
+      ")[0]
+      check["merchant_id"] == id && Date.parse(check["created_at"]) == date
     end
   end
 
   def calculate_revenue(revenue_invoices)
     revenue_invoices.reduce(0) do |total, invoice|
-      quantity_sold = BigDecimal.new(item_qup(invoice.id)[0]["quantity"])
-      sell_price = BigDecimal.new(item_qup(invoice.id)[0]["unit_price"])
-      total += (quantity_sold * sell_price)
+      quantity_sold = BigDecimal.new(invoice["quantity"])
+      sell_price = BigDecimal.new(invoice["unit_price"])
+      total += (quantity_sold * sell_price)/100
     end
-  end
-
-  def successful_invoices
-    invoices.select do |invoice|
-      invoice_transactions = db.execute("
-      SELECT * FROM transactions WHERE invoice_id = #{invoice.id}
-      ")
-      invoice_transactions.any? do |invoice_transaction|
-        invoice_transaction["result"] == "success"
-      end
-    end
-  end
-
-  def successful_invoices_on_date(date)
-    successful_invoices.select do |invoice|
-      Date.parse(invoice.created_at) == date
-    end
-  end
-
-  def item_qup(query_id)
-    db.execute("
-    SELECT quantity, unit_price FROM invoice_items
-    WHERE invoice_id = #{query_id}
-    ")
   end
 
   def sold
-    successful_invoices.reduce(0) do |total, invoice|
-      quantity_sold = BigDecimal.new(item_qup(invoice.id)[0]["quantity"])
+    merchant_successful_invoice_items.reduce(0) do |total, invoice|
+      quantity_sold = BigDecimal.new(invoice["quantity"])
       total += quantity_sold
     end
   end
 
   def favorite_customer
-    #favorite_customer returns the Customer who has conducted the most successful transactions
-     ranked_customers = customer_transactions_hash.to_a.sort {|x,y| y[1] <=> x[1]}
-     "Favorite customer name: #{ranked_customers[0][0].first_name} #{ranked_customers[0][0].last_name}, customer id: #{ranked_customers[0][0].id}, with #{ranked_customers[0][1]} successful transactions"
+    Customer.new(favorite_customer_data, db)
   end
 
-  def customer_transactions_hash
-    hash = Hash.new(0)
-    merchant_successful_transactions.each do |transaction|
-      invoice = invoices.find {|invoice| invoice.id == transaction.invoice.id}
-      customer = repository.sales_engine.customer_repository.find_by(:id, invoice.customer_id )
-      hash[customer] += 1
+  def favorite_customer_data
+    db.execute("
+    SELECT * FROM customers WHERE id = #{fav_customer_id};
+    ")[0]
+  end
+
+  def fav_customer_id
+    customer_visits.max_by {|customer| customer[1]}[0]
+  end
+
+  def customer_visits
+    merchant_revenue_invoices.each_with_object(Hash.new(0)) do |invoice, hash|
+      hash[invoice.customer_id] += 1
     end
-    hash
+  end
+
+  def merchant_revenue_invoices
+    successful_invoices.select {|invoice| invoice.merchant_id == id}
+  end
+
+  def successful_invoices
+    db.execute("
+    SELECT * FROM invoices WHERE id IN (#{string_invoice_ids});
+    ").map {|invoice_data| Invoice.new(invoice_data, db)}
   end
 
   def customers_with_pending_invoices
-    #customers_with_pending_invoices returns a collection of Customer instances which have pending (unpaid) invoices. An invoice is considered pending if none of it’s transactions are successful.
-    naughty_customers = {}
-    all_pending.each do |invoice|
-      customer = repository.sales_engine.customer_repository.find_by(:id, invoice.customer_id)
-      naughty_customers[customer.id] = "#{customer.first_name} #{customer.last_name}"
+    bad_customers.map do |customer|
+      customer_data = db.execute("
+      SELECT * FROM customers WHERE id = #{customer[0]};
+      ")[0]
+      Customer.new(customer_data, db)
     end
-    naughty_customers
+  end
+
+  def bad_customers
+    all_pending.each_with_object(Hash.new(0)) do |invoice, hash|
+      hash[invoice.customer_id] += 1
+    end
   end
 
   def all_pending
@@ -107,8 +119,10 @@ class Merchant
   end
 
   def no_successful_transactions?(invoice)
-    transactions = repository.sales_engine.transaction_repository.find_all_by(:invoice_id, invoice.id)
-    transactions.none? {|transaction| transaction.result == "success"}
+    transactions = db.execute ("
+    SELECT * FROM transactions where invoice_id = #{invoice.id};
+    ")
+    transactions.none? {|transaction| transaction["result"] == "success"}
   end
 
 end
