@@ -30,10 +30,7 @@ class Customer
   end
 
   def favorite_merchant
-    # returns an instance of Merchant where the customer has conducted the most successful transactions
-    hash = Hash.new(0)
-    invoices.each {|invoice| hash[invoice.merchant_id] += 1}
-    repository.sales_engine.merchant_repository.find_by(:id, ranked_merchants(hash)[0][0]).name
+    Merchant.new(favorite_merchant_data, db)
   end
 
   private
@@ -42,8 +39,20 @@ class Customer
     invoices.map {|invoice| invoice.attributes["id"]}.join(", ")
   end
 
-  def ranked_merchants(hash)
-    hash.to_a.sort {|x, y| y[1] <=> x[1]}
+  def merchant_visits
+    invoices.each_with_object(Hash.new(0)) do |invoice, hash|
+      hash[invoice.merchant_id] += 1
+    end
+  end
+
+  def fav_merchant_id
+    merchant_visits.max_by {|merchant| merchant[1]}[0]
+  end
+
+  def favorite_merchant_data
+    db.execute("
+    SELECT * FROM merchants WHERE id = #{fav_merchant_id};
+    ")[0]
   end
 
 end

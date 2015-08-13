@@ -30,8 +30,8 @@ end
     invoice_item1 = invoice_item_repo.find_by_id(2)
     invoice_item2 = invoice_item_repo.find_by_id(302)
 
-    assert_equal 528, invoice_item1["item_id"]
-    assert_equal 64747, invoice_item2["unit_price"]
+    assert_equal 528, invoice_item1.item_id
+    assert_equal 64747, invoice_item2.unit_price
   end
 
   def test_find_all_by_item_id

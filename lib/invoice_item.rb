@@ -23,7 +23,10 @@ class InvoiceItem
   end
 
   def item
-    repository.sales_engine.item_repository.find_by(:id, item_id)
+    item_data = db.execute("
+    SELECT * FROM items WHERE id = #{attributes["item_id"]};
+    ")[0]
+    Item.new(item_data, db)
   end
 
   #untested

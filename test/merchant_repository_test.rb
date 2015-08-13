@@ -30,26 +30,42 @@ end
     merchant1 = merchant_repo.find_by_id(98)
     merchant2 = merchant_repo.find_by_id(11)
 
-    assert_equal "Okuneva, Prohaska and Rolfson", merchant1["name"]
-    assert_equal "Pollich and Sons", merchant2["name"]
+    assert_equal "Okuneva, Prohaska and Rolfson", merchant1.name
+    assert_equal "Pollich and Sons", merchant2.name
   end
 
   def test_find_by_name
     query_name1 = "Sporer, Christiansen and Connelly"
     query_name2 = "Friesen, Hackett and Runte"
 
-    assert_equal 56, merchant_repo.find_by_name(query_name1)[0]["id"]
-    assert_equal 90, merchant_repo.find_by_name(query_name2)[0]["id"]
+    assert_equal 56, merchant_repo.find_by_name(query_name1).id
+    assert_equal 90, merchant_repo.find_by_name(query_name2).id
   end
 
   def test_most_revenue
     top_3 = 3
 
-    expected = {"Okuneva, Prohaska and Rolfson"=>"$124181.06",
-                "Bechtelar, Jones and Stokes"=>"$110898.05",
-                "Tromp Inc"=>"$78824.63"}
+    expected = [
+                "Dicki-Bednar",
+                "Auer, Crooks and Shanahan",
+                "Kassulke, O'Hara and Quitzon"
+               ]
+    result = merchant_repo.most_revenue(top_3).map {|merchant| merchant.name}
 
-    assert_equal expected, merchant_repo.most_revenue(top_3)
+    assert_equal expected, result
+  end
+
+  def test_most_items
+    top_3 = 3
+
+    expected = [
+                "Dicki-Bednar",
+                "Auer, Crooks and Shanahan",
+                "Kassulke, O'Hara and Quitzon"
+               ]
+    result = merchant_repo.most_items(top_3).map {|merchant| merchant.name}
+
+    assert_equal expected, result
   end
 
 end

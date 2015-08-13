@@ -11,7 +11,7 @@ class InvoiceTest < Minitest::Test
   end
 
   def test_it_gets_an_array_of_transactions
-    invoice = Invoice.new(invoice_repo.find_by_id(11), db)
+    invoice = invoice_repo.find_by_id(11)
 
     assert_equal Array, invoice.transactions.class
     assert invoice.transactions.all? do |transaction|
@@ -20,7 +20,7 @@ class InvoiceTest < Minitest::Test
   end
 
   def test_it_gets_the_correct_transactions
-    invoice = Invoice.new(invoice_repo.find_by_id(12), db)
+    invoice = invoice_repo.find_by_id(12)
     transaction_ids = invoice.transactions.map do |transaction|
       transaction.attributes["id"]
     end
@@ -35,14 +35,14 @@ class InvoiceTest < Minitest::Test
   end
 
   def test_it_gets_an_array_of_invoice_items
-    invoice = Invoice.new(invoice_repo.find_by_id(12), db)
+    invoice = invoice_repo.find_by_id(12)
 
     assert_equal Array, invoice.invoice_items.class
     assert invoice.invoice_items.all?{|invoice_item| invoice_item.class == InvoiceItem}
   end
 
   def test_it_gets_the_correct_invoice_items
-    invoice = Invoice.new(invoice_repo.find_by_id(12), db)
+    invoice = invoice_repo.find_by_id(12)
     invoice_item_ids = invoice.invoice_items.map do |invoice_item|
       invoice_item.attributes["id"]
     end
@@ -55,14 +55,14 @@ class InvoiceTest < Minitest::Test
   end
 
   def test_it_gets_an_array_of_items
-    invoice = Invoice.new(invoice_repo.find_by_id(34), db)
+    invoice = invoice_repo.find_by_id(34)
 
     assert_equal Array, invoice.items.class
     assert invoice.items.all?{|item| item.class == Item}
   end
 
   def test_it_gets_the_correct_items
-    invoice = Invoice.new(invoice_repo.find_by_id(12), db)
+    invoice = invoice_repo.find_by_id(12)
     item_ids = invoice.items.map {|item| item.attributes["id"]}
     item_prices = invoice.items.map {|item| item.attributes["unit_price"]}
 
@@ -71,25 +71,25 @@ class InvoiceTest < Minitest::Test
   end
 
   def test_it_can_pull_a_customer
-    invoice = Invoice.new(invoice_repo.find_by_id(97), db)
+    invoice = invoice_repo.find_by_id(97)
 
     assert_equal Customer, invoice.customer.class
   end
 
   def test_it_pulls_the_correct_customer
-    invoice = Invoice.new(invoice_repo.find_by_id(67), db)
+    invoice = invoice_repo.find_by_id(67)
 
     assert_equal "Katrina", invoice.customer.attributes["first_name"]
   end
 
   def test_it_can_pull_a_merchant
-    invoice = Invoice.new(invoice_repo.find_by_id(103), db)
+    invoice = invoice_repo.find_by_id(103)
 
     assert_equal Merchant, invoice.merchant.class
   end
 
   def test_merchant__it_pulls_the_correct_merchant
-    invoice = Invoice.new(invoice_repo.find_by_id(22), db)
+    invoice = invoice_repo.find_by_id(22)
 
     result = invoice.merchant.attributes["name"]
 
@@ -97,7 +97,7 @@ class InvoiceTest < Minitest::Test
   end
 
   def test_it_knows_type_name
-    invoice = Invoice.new(invoice_repo.find_by_id(1), db)
+    invoice = invoice_repo.find_by_id(1)
 
     assert_equal :invoice, invoice.type_name
   end

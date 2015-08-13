@@ -11,13 +11,13 @@ class InvoiceItemTest < Minitest::Test
   end
 
   def test_it_can_pull_an_invoice
-    invoice_item = InvoiceItem.new(invoice_item_repo.find_by_id(11), db)
+    invoice_item = invoice_item_repo.find_by_id(11)
 
     assert_equal Invoice, invoice_item.invoice.class
   end
 
   def test_it_pulls_the_correct_invoice
-    invoice_item = InvoiceItem.new(invoice_item_repo.find_by_id(13), db)
+    invoice_item = invoice_item_repo.find_by_id(13)
 
     assert_equal 3, invoice_item.invoice.attributes["id"]
   	assert_equal 78, invoice_item.invoice.attributes["merchant_id"]

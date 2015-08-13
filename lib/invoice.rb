@@ -11,7 +11,7 @@ class Invoice
 
   def assign_class_specific_attributes
     @customer_id = attributes["customer_id"]
-    @merchant_id = attributes["marchant_id"]
+    @merchant_id = attributes["merchant_id"]
     @status = attributes["status"]
   end
 

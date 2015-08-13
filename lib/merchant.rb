@@ -4,7 +4,7 @@ require_relative 'invoice'
 
 class Merchant
   include InstanceModule
-  attr_reader :name
+  attr_reader :name, :total_revenue, :total_items_sold
 
   def type_name
     :merchant
@@ -12,6 +12,8 @@ class Merchant
 
   def assign_class_specific_attributes
     @name = attributes["name"]
+    @total_revenue = revenue
+    @total_items_sold = sold
   end
 
   def id_column
@@ -25,32 +27,51 @@ class Merchant
     item_list.map {|item| Item.new(item, db)}
   end
 
-  def total_revenue
-    revenue = 0
-    #revenue returns the total revenue for that merchant across all transactions
-    merchant_successful_transactions.each do |transaction|
-      revenue += repository.invoice_item_revenue(transaction)
-    end
-    "#{name} Total revenue: #{repository.dollars(revenue)}"
-  end
-
-  def merchant_successful_transactions
-    invoices.map do |invoice|
-      repository.successful_transactions.find {|t| t.invoice_id == invoice.id}
+  def revenue(date = nil)
+    if date.nil?
+      calculate_revenue(successful_invoices)
+    else
+      calculate_revenue(successful_invoices_on_date(date))
     end
   end
 
-  def revenue_on_date(date)
-    revenue = calculate_revenue_on_date(date)
-    "#{name} Total revenue on #{date}: #{repository.dollars(revenue)}"
+  def calculate_revenue(revenue_invoices)
+    revenue_invoices.reduce(0) do |total, invoice|
+      quantity_sold = BigDecimal.new(item_qup(invoice.id)[0]["quantity"])
+      sell_price = BigDecimal.new(item_qup(invoice.id)[0]["unit_price"])
+      total += (quantity_sold * sell_price)
+    end
   end
 
-  def calculate_revenue_on_date(date)
-    revenue = 0
-    merchant_successful_transactions.each do |transaction|
-      revenue += repository.invoice_item_revenue(transaction) if transaction.created_at[0..9] == date
+  def successful_invoices
+    invoices.select do |invoice|
+      invoice_transactions = db.execute("
+      SELECT * FROM transactions WHERE invoice_id = #{invoice.id}
+      ")
+      invoice_transactions.any? do |invoice_transaction|
+        invoice_transaction["result"] == "success"
+      end
     end
-    revenue
+  end
+
+  def successful_invoices_on_date(date)
+    successful_invoices.select do |invoice|
+      Date.parse(invoice.created_at) == date
+    end
+  end
+
+  def item_qup(query_id)
+    db.execute("
+    SELECT quantity, unit_price FROM invoice_items
+    WHERE invoice_id = #{query_id}
+    ")
+  end
+
+  def sold
+    successful_invoices.reduce(0) do |total, invoice|
+      quantity_sold = BigDecimal.new(item_qup(invoice.id)[0]["quantity"])
+      total += quantity_sold
+    end
   end
 
   def favorite_customer

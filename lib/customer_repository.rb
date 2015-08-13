@@ -14,17 +14,39 @@ class CustomerRepository
   end
 
   def find_all_by_first_name(name)
-    db.execute("
+    name_data = db.execute("
     SELECT * FROM customers WHERE
     first_name = '#{name.downcase}' COLLATE NOCASE;
     ")
+    name_data.map do |instance_data|
+      instance_class(instance_data, db)
+    end
+  end
+
+  def find_by_first_name(name)
+    name_data = db.execute("
+    SELECT * FROM customers WHERE
+    first_name = '#{name.downcase}' COLLATE NOCASE;
+    ")[0]
+    instance_class(name_data, db)
   end
 
   def find_all_by_last_name(name)
-    db.execute("
+    name_data = db.execute("
     SELECT * FROM customers WHERE
     last_name = '#{name.downcase}' COLLATE NOCASE;
     ")
+    name_data.map do |instance_data|
+      instance_class(instance_data, db)
+    end
+  end
+
+  def find_by_last_name(name)
+    name_data = db.execute("
+    SELECT * FROM customers WHERE
+    last_name = '#{name.downcase}' COLLATE NOCASE;
+    ")[0]
+    instance_class(name_data, db)
   end
 
 end

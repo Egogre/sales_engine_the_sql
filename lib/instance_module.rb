@@ -1,14 +1,15 @@
 require 'sqlite3'
+require 'bigdecimal'
 
 module InstanceModule
   attr_reader :db, :attributes, :id, :created_at, :updated_at
 
-  def initialize(attributes, database)
+  def initialize(attribute_data, database)
     @db = database
-    @attributes = attributes
-    @id = attributes["id"]
-    @created_at = attributes["created_at"]
-    @updated_at = attributes["updated_at"]
+    @attributes = attribute_data
+    @id = attribute_data["id"]
+    @created_at = attribute_data["created_at"]
+    @updated_at = attribute_data["updated_at"]
     assign_class_specific_attributes
   end
 

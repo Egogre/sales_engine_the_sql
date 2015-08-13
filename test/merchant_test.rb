@@ -11,14 +11,14 @@ class MerchantTest < Minitest::Test
   end
 
   def test_it_returns_an_array_of_items
-    merchant = Merchant.new(merchant_repo.find_by_id(11), db)
+    merchant = merchant_repo.find_by_id(11)
 
     assert_equal Array, merchant.items.class
     assert merchant.items.all?{|item| item.class == Item}
   end
 
   def test_it_returns_the_correct_items
-    merchant = Merchant.new(merchant_repo.find_by_id(11), db)
+    merchant = merchant_repo.find_by_id(11)
     item_ids = merchant.items.map {|item| item.attributes["id"]}
     unit_prices = merchant.items.map {|item| item.attributes["unit_price"]}
 
@@ -27,14 +27,14 @@ class MerchantTest < Minitest::Test
   end
 
   def test_it_returns_an_array_of_invoices
-    merchant = Merchant.new(merchant_repo.find_by_id(50), db)
+    merchant = merchant_repo.find_by_id(50)
 
     assert_equal Array, merchant.invoices.class
     assert merchant.invoices.all?{|invoice| invoice.class == Invoice}
   end
 
   def test_it_returns_the_correct_invoices
-    merchant = Merchant.new(merchant_repo.find_by_id(77), db)
+    merchant = merchant_repo.find_by_id(77)
     invoice_ids = merchant.invoices.map {|invoice| invoice.attributes["id"]}
     customer_ids = merchant.invoices.map do |invoice|
       invoice.attributes["customer_id"]
@@ -58,16 +58,23 @@ class MerchantTest < Minitest::Test
     assert_equal expected_invoice_ids, invoice_ids
     assert_equal expected_customer_ids, customer_ids
   end
-  #
-  # def test_it_finds_total_revenue
-  #   skip
-  #   merchant = engine.merchant_repository.find_by(:id, "4")
-  #
-  #   expected = "Cummings-Thiel Total revenue: $1291.44"
-  #
-  #   assert_equal expected, merchant.total_revenue
-  # end
-  #
+
+  def test_it_finds_total_revenue
+    merchant = merchant_repo.find_by_id(4)
+
+    expected = BigDecimal.new("10930155")
+
+    assert_equal expected, merchant.total_revenue
+  end
+
+  def test_it_finds_total_items_sold
+    merchant = merchant_repo.find_by_id(33)
+
+    expected = BigDecimal.new("298")
+
+    assert_equal expected, merchant.total_items_sold
+  end
+
   # def test_it_finds_total_revenue_if_zero
   #   skip
   #   merchant = engine.merchant_repository.find_by(:id, "42")

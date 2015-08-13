@@ -30,15 +30,15 @@ end
     item1 = item_repo.find_by_id(196)
     item2 = item_repo.find_by_id(36)
 
-    assert_equal 9, item1["merchant_id"]
-    assert_equal "Item Omnis Molestiae", item2["name"]
+    assert_equal 9, item1.merchant_id
+    assert_equal "Item Omnis Molestiae", item2.name
   end
 
   def test_find_by_name
     result1 = item_repo.find_by_name("Item Autem Minima")
     result2 = item_repo.find_by_name("Item Aut Id")
-    assert_equal 67076, result1[0]["unit_price"]
-    assert_equal 283, result2[0]["id"]
+    assert_equal 67076, result1.unit_price
+    assert_equal 283, result2.id
   end
 
   def test_find_by_description
@@ -47,7 +47,7 @@ end
     part3 = "praesentium reiciendis voluptatibus eveniet odit perspiciatis. "
     part4 = "Odio optio nisi rerum nihil ut."
     description = part1 + part2 +part3 + part4
-    assert_equal 3, item_repo.find_by_description(description)[0]["id"]
+    assert_equal 3, item_repo.find_by_description(description)[0].id
   end
 
   def test_find_all_by_unit_price

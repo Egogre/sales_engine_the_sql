@@ -30,8 +30,8 @@ attr_reader :customer_repo
     customer1 = customer_repo.find_by_id(2)
     customer2 = customer_repo.find_by_id(99)
 
-    assert_equal "Cecelia", customer1["first_name"]
-    assert_equal "Wilkinson", customer2["last_name"]
+    assert_equal "Cecelia", customer1.first_name
+    assert_equal "Wilkinson", customer2.last_name
   end
 
   def test_find_all_by_first_name_case_insensitive

@@ -24,6 +24,7 @@ class SalesEngine
               :customer_table
 
   def initialize(csv_folder = nil)
+    `rm -rf sales_engine.db`
     csv_folder = csv_folder || File.expand_path('../../data',  __FILE__)
     @customers          = CSV.read("#{csv_folder}/customers.csv",
                                   :headers => true,
@@ -69,7 +70,9 @@ class SalesEngine
   def build_database
     @db = SQLite3::Database.new("sales_engine.db")
     db.results_as_hash = true
+    db.transaction
     load_database_tables
+    db.commit
   end
 
   def load_database_tables

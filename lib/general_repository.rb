@@ -1,7 +1,7 @@
 require 'sqlite3'
 
 module GeneralRepository
-  attr_reader :db, :all
+  attr_reader :db, :all, :time
 
   def initialize(database)
     @db = database
@@ -13,60 +13,88 @@ module GeneralRepository
     end
   end
 
-  def all
-    db.execute("
-    SELECT * FROM #{table};
-    ")
-  end
-
   def random
     @table_length ||= all.count
     random_id = rand(1..@table_length)
-    db.execute("
+    random_data = db.execute("
     SELECT * FROM #{table} WHERE id = #{random_id};
-    ")
+    ")[0]
+    instance_class(random_data, db)
   end
 
   def find_by_id(query_id)
-    db.execute("
+    instance_data = db.execute("
     SELECT * FROM #{table} WHERE id = #{query_id};
     ")[0]
+    instance_class(instance_data, db)
   end
 
   def find_all_by_created_at(query_date)
-    db.execute("
+    all_created_at = db.execute("
     SELECT * FROM #{table} WHERE created_at = '#{query_date}';
     ")
+    all_created_at.map do |instance_data|
+      instance_class(instance_data, db)
+    end
   end
 
   def find_all_by_updated_at(query_date)
-    db.execute("
+    all_updated_at = db.execute("
     SELECT * FROM #{table} WHERE updated_at = '#{query_date}';
     ")
+    all_updated_at.map do |instance_data|
+      instance_class(instance_data, db)
+    end
   end
 
   def find_all_by_invoice_id(query_id)
-    db.execute("
+    invoice_data = db.execute("
     SELECT * FROM #{table} WHERE invoice_id = #{query_id};
     ")
+    invoice_data.map do |instance_data|
+      instance_class(instance_data, db)
+    end
   end
 
   def find_all_by_unit_price(query_price)
-    db.execute("
-    SELECT * FROM #{table} WHERE unit_price = #{query_price};
+    data_table = db.execute("
+    SELECT * FROM #{table} WHERE unit_price = #{(query_price * 100).to_i};
     ")
+    data_table.map do |instance_data|
+      instance_class(instance_data, db)
+    end
+  end
+
+  def find_by_unit_price(query_price)
+    instance_data = db.execute("
+    SELECT * FROM #{table} WHERE unit_price = #{(query_price * 100).to_i};
+    ")[0]
+      instance_class(instance_data, db)
   end
 
   def find_all_by_merchant_id(query_id)
-    db.execute("
+    merchant_table = db.execute("
     SELECT * FROM #{table} WHERE merchant_id = #{query_id};
     ")
+    merchant_table.map do |instance_data|
+      instance_class(instance_data, db)
+    end
   end
 
   def find_by_name(query_name)
-    db.execute("
+    name_data = db.execute("
+    SELECT * FROM #{table} WHERE name = '#{query_name}';
+    ")[0]
+    instance_class(name_data, db)
+  end
+
+  def find_all_by_name(query_name)
+    name_data = db.execute("
     SELECT * FROM #{table} WHERE name = '#{query_name}';
     ")
+    name_data.map do |instance_data|
+      instance_class(instance_data, db)
+    end
   end
 
   def inspect
